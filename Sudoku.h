@@ -2,7 +2,8 @@
 #include<vector>
 #include<cstdio>
 #include<string>
-
+#include<time.h>
+#include<cstdlib>
 
 #ifndef Sudoku_h
 #define Sudoku_h

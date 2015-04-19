@@ -3,9 +3,60 @@ using namespace std;
 
 void Sudoku::GiveQuestion(){
 	int i = 0;
-	int question[144] = {4 ,2 ,6 ,8 ,7 ,3 ,9 ,5 ,1 ,-1, -1, -1, 0, 0, 3, 9, 5, 0, 6, 0, 4, -1, -1, -1, 9, 0, 1, 6, 2, 4, 8, 0, 0, -1, -1, -1, -1, -1, -1, 1, 0, 2, 0, 8, 7, 9, 5, 6, -1, -1, -1, 0, 0, 0, 1, 9, 0, 4, 2, 0, -1, -1, -1, 4, 0, 6, 2, 3, 0, 8, 7, 1, 1, 0, 0, 0, 4, 0, -1, -1, -1, 6, 9, 5, 0, 0, 4, 0, 6, 0, -1, -1, -1, 1, 3, 7, 6, 0, 5, 0, 1, 7, -1, -1, -1, 2, 8, 4, 3, 1, 2, -1, -1, -1, 7, 4, 0, 5, 0, 9, 7, 4, 8, -1, -1, -1, 0, 6, 9, 3, 0, 2, 0, 6, 0, -1, -1, -1, 3, 1, 0, 7, 0, 8};
+	int rquestion[144]={0};
+	int question[144] = {0, 1, 0, 0, 0, 0, 0, 6, 4, -1, -1, -1,
+	0, 7, 3, 0, 0, 0, 1, 0, 0, -1, -1, -1,
+	4, 5, 0, 0, 0, 9, 0, 0, 0, -1, -1, -1,
+	0, 0, 0, -1, -1, -1, 0, 4, 0, 0, 0, 0,
+	0, 0, 9, -1, -1, -1, 3, 0, 5, 0, 0, 0,
+	0, 3, 0, -1, -1, -1, 0, 2, 0, 0, 0, 7,
+	-1, -1, -1, 0, 0, 0, 7, 0, 0, 0, 2, 9,
+	-1, -1, -1, 0, 0, 4, 0, 0, 0, 1, 0, 0,
+	-1, -1, -1, 0, 8, 0, 0, 0, 0, 0, 6, 0,
+	5, 0, 0, 0, 6, 0, -1, -1, -1, 8, 1, 0,
+	0, 0, 0, 8, 5, 0, -1, -1, -1, 6, 0, 0,
+	0, 0, 0, 0, 7, 0, -1, -1, -1, 0, 0, 0,
+	};
+	srand((unsigned)time(NULL));
+	int seed = rand()%6;
+	int sign = 0;
+	if(seed%5==0){
+		for(i = 0;i<144;i++){
+			sign = ((11-((i-(i%12))/12))*12)+(i%12);
+			rquestion[sign] = question[i];
+		}
+	}
+	if(seed%5==1){
+                for(i = 0;i<144;i++){
+                        sign = (((i%12)-11)*(-1))+((i/12)*12);
+                        rquestion[sign] = question[i];
+                }
+        }
+	if(seed%5==2){
+                for(i = 0;i<144;i++){
+                        sign = ((i%12)*12)+(i/12);
+                        rquestion[sign] = question[i];
+                }
+        }
+	if(seed%5==3){
+                for(i = 0;i<144;i++){
+			if(question[i]==0 || question[i]==-1){
+				rquestion[i] = question[i];
+			}
+			else{
+                        	rquestion[i] = (question[i]-10)*(-1);
+			}
+                }
+        }
+	if(seed%5==4){
+                for(i = 0;i<144;i++){
+                        rquestion[i] = question[i];
+                }
+        }
+
+	cout<<seed<<endl;
 	for(i=0;i<144;i++){
-		cout<<question[i]<<" ";
+		cout<<rquestion[i]<<" ";
 		if(i%12 == 11){
 			cout<<endl;
 		}
@@ -64,14 +115,54 @@ bool Sudoku::Solve(){
         int theOne = 0;
         int theLast = 0;
         int i;
-	/*if(sp2 == 108){
+	if(sp2 == 108){
 		cout<<2<<endl;
 		return 0;
-	}*/
+	}
 	if(sp1 != 36){
 		cout<<0<<endl;
 		return 0;
 	}
+	
+	
+	int b;
+	int sp3;
+        int head;
+	for(b = 0;b<144;b++){
+		if(sudoku[b]==-1){
+        		head = (b/36)*36 + ((b%12)/3)*3 ;
+			sp3 = 0;
+        		for(int i=0 ; i<9 ; i++){
+                		int index = (i/3)*12+(i%3) + head ;
+                		if(sudoku[index]==-1)  sp3++ ;
+        		}
+			if(sp3!=9){
+				cout<<0<<endl;
+				return 0;
+			}
+			sp3 = 0;
+			int head = (b/12)*12 ;
+        		for(int i=head ; i<head+12 ; i++){  // parellel
+                		if(sudoku[i]==-1)  sp3++;
+        		}
+			if(sp3!=3){
+				cout<<0<<endl;
+				return 0;
+			}
+			sp3 = 0;
+			head = b%12 ;
+		        for(int i=head ; i<head+144 ; i+=12){  // vertical
+                		if(sudoku[i]==-1){
+					sp3++;
+				}
+        		}
+			if(sp3!=3){
+				cout<<0<<endl;
+				return 0;
+			}
+		}
+	}
+
         for(i=0;i<144;i++){
                 if(canModify[i] == 1){
                         theOne = i;
