@@ -52,9 +52,7 @@ void Sudoku::GiveQuestion(){
                 for(i = 0;i<144;i++){
                         rquestion[i] = question[i];
                 }
-        }
-
-	cout<<seed<<endl;
+     
 	for(i=0;i<144;i++){
 		cout<<rquestion[i]<<" ";
 		if(i%12 == 11){
